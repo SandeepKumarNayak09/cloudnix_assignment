@@ -155,7 +155,6 @@
             class="form-control"
             id="logoInput"
             accept="image/*"
-            onchange="previewLogo(event)"
           />
           <img
             id="logoPreview"
@@ -170,7 +169,6 @@
             type="checkbox"
             class="form-check-input"
             id="supportToggle"
-            onchange="toggleSupportDetails()"
           />
           <label class="form-check-label" for="supportToggle"
             >Add support details</label
@@ -201,8 +199,8 @@
         >
           Back
         </button>
-        <button class="btn btn-primary" onclick="goNext()">
-          Save and Continue
+        <button id="saveButton" class="btn btn-primary">
+          Save
         </button>
       </div>
 
@@ -221,94 +219,91 @@
       crossorigin="anonymous"
     ></script>
     <script>
+      $(document).ready(function () {
+        loadStoreDetails();
+
+        $("#storeName").on("input", updatePreview);
+        $("#storeTitle").on("input", updatePreview);
+        $("#supportEmail").on("input", updatePreview);
+        $("#supportPhone").on("input", updatePreview);
+        $("#supportToggle").on("change", toggleSupportDetails);
+        $("#logoInput").on("change", previewLogo);
+        $("#saveButton").on("click", saveAndContinue);
+      });
+
+      function loadStoreDetails() {
+        const storeName = localStorage.getItem("storeName") || "";
+        const storeTitle = localStorage.getItem("storeTitle") || "";
+        const supportEmail = localStorage.getItem("supportEmail") || "";
+        const supportPhone = localStorage.getItem("supportPhone") || "";
+        const storeLogo = localStorage.getItem("storeLogo");
+
+        $("#storeName").val(storeName);
+        $("#storeTitle").val(storeTitle);
+        $("#supportEmail").val(supportEmail);
+        $("#supportPhone").val(supportPhone);
+        $("#previewName").text(storeName || "Store Name");
+        $("#previewTitle").text(storeTitle || "Store Title");
+        $("#previewEmail").text(supportEmail ? `Email: ${supportEmail}` : "");
+        $("#previewPhone").text(supportPhone ? `Phone: ${supportPhone}` : "");
+        $("#logoPreview, #previewLogo").attr("src", storeLogo || "").toggle(!!storeLogo);
+        $("#supportFields").toggle(!!supportEmail || !!supportPhone);
+        $("#supportToggle").prop("checked", !!supportEmail || !!supportPhone);
+      }
+
+      function updatePreview() {
+        const storeName = $("#storeName").val().trim();
+        const storeTitle = $("#storeTitle").val().trim();
+        const supportEmail = $("#supportEmail").val().trim();
+        const supportPhone = $("#supportPhone").val().trim();
+
+        $("#previewName").text(storeName || "Store Name");
+        $("#previewTitle").text(storeTitle || "Store Title");
+        $("#previewEmail").text(supportEmail ? `Email: ${supportEmail}` : "");
+        $("#previewPhone").text(supportPhone ? `Phone: ${supportPhone}` : "");
+      }
+
+      function toggleSupportDetails() {
+        const isChecked = $("#supportToggle").is(":checked");
+        $("#supportFields").toggle(isChecked);
+        if (!isChecked) {
+          $("#supportEmail, #supportPhone").val("");
+          updatePreview();
+        }
+      }
+
       function previewLogo(event) {
         const file = event.target.files[0];
         if (file) {
           const reader = new FileReader();
           reader.onload = function (e) {
             const base64Image = e.target.result;
-            $("#logoPreview").attr("src", base64Image);
-            $("#previewLogo").attr("src", base64Image);
+            $("#logoPreview, #previewLogo").attr("src", base64Image).show();
             localStorage.setItem("storeLogo", base64Image);
           };
           reader.readAsDataURL(file);
         }
       }
 
-      // Live preview and storage
-      $("#storeName").on("input", function () {
-        const value = $(this).val();
-        $("#previewName").text(value || "Store Name");
-        localStorage.setItem("storeName", value);
-      });
+      function saveAndContinue() {
+        const storeName = $("#storeName").val().trim();
+        const storeTitle = $("#storeTitle").val().trim();
+        const supportEmail = $("#supportEmail").val().trim();
+        const supportPhone = $("#supportPhone").val().trim();
 
-      $("#storeTitle").on("input", function () {
-        const value = $(this).val();
-        $("#previewTitle").text(value || "Store Title");
-        localStorage.setItem("storeTitle", value);
-      });
-
-      $("#supportEmail").on("input", function () {
-        const value = $(this).val();
-        $("#previewEmail").text(value ? "Email: " + value : "");
-        localStorage.setItem("supportEmail", value);
-      });
-
-      $("#supportPhone").on("input", function () {
-        const value = $(this).val();
-        $("#previewPhone").text(value ? "Phone: " + value : "");
-        localStorage.setItem("supportPhone", value);
-      });
-
-      function toggleSupportDetails() {
-        const isChecked = $("#supportToggle").is(":checked");
-        const $supportFields = $("#supportFields");
-
-        $supportFields.toggle(isChecked);
-
-        if (!isChecked) {
-          $("#supportEmail").val("");
-          $("#supportPhone").val("");
-          $("#previewEmail").text("");
-          $("#previewPhone").text("");
-          localStorage.removeItem("supportEmail");
-          localStorage.removeItem("supportPhone");
+        if (!storeName || !storeTitle) {
+          alert("Store Name and Store Title are required.");
+          return;
         }
-      }
 
-      function goNext() {
+        localStorage.setItem("storeName", storeName);
+        localStorage.setItem("storeTitle", storeTitle);
+        localStorage.setItem("supportEmail", supportEmail);
+        localStorage.setItem("supportPhone", supportPhone);
+
         alert("Store details saved successfully!");
-        // window.location.href = "next-step.html"; // enable when navigation is ready
+        window.location.href = "step.html";
       }
-
-      // Load saved values
-      $(document).ready(function () {
-        const name = localStorage.getItem("storeName") || "";
-        const title = localStorage.getItem("storeTitle") || "";
-        const email = localStorage.getItem("supportEmail") || "";
-        const phone = localStorage.getItem("supportPhone") || "";
-        const logo = localStorage.getItem("storeLogo");
-
-        $("#storeName").val(name);
-        $("#storeTitle").val(title);
-        $("#supportEmail").val(email);
-        $("#supportPhone").val(phone);
-
-        $("#previewName").text(name || "Store Name");
-        $("#previewTitle").text(title || "Store Title");
-        $("#previewEmail").text(email ? "Email: " + email : "");
-        $("#previewPhone").text(phone ? "Phone: " + phone : "");
-
-        if (logo) {
-          $("#logoPreview").attr("src", logo);
-          $("#previewLogo").attr("src", logo);
-        }
-
-        if (email || phone) {
-          $("#supportToggle").prop("checked", true);
-          $("#supportFields").show();
-        }
-      });
     </script>
   </body>
 </html>

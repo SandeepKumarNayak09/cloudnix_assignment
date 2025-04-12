@@ -143,6 +143,20 @@
     <!-- <h5>Step 2 - The user will add the product type and category</h5> -->
   </div>
 
+  <div class="container text-end mt-3">
+    <button id="logoutButton" class="btn btn-danger">Logout</button>
+  </div>
+
+  <div class="container mt-4">
+    <div class="text-center">
+      <img id="storeLogoDisplay" src="" alt="Store Logo" style="max-width: 150px; display: none;" />
+      <h1 id="storeNameDisplay">Store Name</h1>
+      <h3 id="storeTitleDisplay">Store Title</h3>
+      <p id="supportEmailDisplay"></p>
+      <p id="supportPhoneDisplay"></p>
+    </div>
+  </div>
+
   <div class="step-container">
     <!-- Form Side -->
     <div class="form-side">
@@ -152,17 +166,10 @@
       <input type="text" id="categoryInput" class="form-control" placeholder="Add a category (optional)">
       <input type="text" id="subCategoryInput" class="form-control" placeholder="Add a sub-category (optional)">
 
-      <div class="d-grid gap-2">
-        <button class="btn btn-success" onclick="addEntry()">Add</button>
-      </div>
-
       <div id="entryList" class="mt-4"></div>
       <div class="btn-group mt-4">
         <button onclick="window.location.href='cvbn.html'" class="btn btn-secondary">Back</button>
-
-        <!-- <button class="btn btn-primary" onclick="goToNextStep()">Next</button> -->
-        <button onclick="window.location.href='pricing.html'" class="btn btn-primary">Next</button>
-
+        <button id="nextButton" class="btn btn-primary">Next</button>
       </div>
     </div>
 
@@ -184,84 +191,68 @@
 <script>
   let entries = [];
 
-  function addEntry() {
-    const type = $.trim($('#typeInput').val());
-    const category = $.trim($('#categoryInput').val());
-    const subCategory = $.trim($('#subCategoryInput').val());
+  $(document).ready(function () {
+    loadEntries();
+    loadStoreDetails();
+
+    $("#nextButton").on("click", handleNext);
+    $("#logoutButton").on("click", handleLogout);
+  });
+
+  function loadEntries() {
+    const savedEntries = localStorage.getItem("productEntries");
+    entries = savedEntries ? JSON.parse(savedEntries) : [];
+    renderEntries();
+  }
+
+  function loadStoreDetails() {
+    const storeName = localStorage.getItem("storeName") || "Store Name";
+    const storeTitle = localStorage.getItem("storeTitle") || "Store Title";
+    const supportEmail = localStorage.getItem("supportEmail") || "";
+    const supportPhone = localStorage.getItem("supportPhone") || "";
+    const storeLogo = localStorage.getItem("storeLogo") || "";
+
+    $("#storeNameDisplay").text(storeName);
+    $("#storeTitleDisplay").text(storeTitle);
+    $("#supportEmailDisplay").text(supportEmail ? `Email: ${supportEmail}` : "");
+    $("#supportPhoneDisplay").text(supportPhone ? `Phone: ${supportPhone}` : "");
+    $("#storeLogoDisplay").attr("src", storeLogo).toggle(!!storeLogo);
+  }
+
+  function handleNext() {
+    const type = $.trim($("#typeInput").val());
+    const category = $.trim($("#categoryInput").val());
+    const subCategory = $.trim($("#subCategoryInput").val());
 
     if (!type) {
-      alert("Product type is required.");
+      alert("Please fill in the product type before proceeding.");
       return;
     }
 
-    const entry = { type, category, subCategory };
-    entries.push(entry);
-    updateDisplay();
-    clearInputs();
+    entries.push({ type, category, subCategory });
+    localStorage.setItem("productEntries", JSON.stringify(entries));
+    window.location.href = "pricing.html";
   }
 
-  function removeEntry(index) {
-    entries.splice(index, 1);
-    updateDisplay();
-  }
-
-  function clearInputs() {
-    $('#typeInput').val('');
-    $('#categoryInput').val('');
-    $('#subCategoryInput').val('');
-  }
-
-  function updateDisplay() {
-    const $entryList = $('#entryList').empty();
-    const $diagramPreview = $('#diagramPreview').empty();
-
-    entries.forEach((entry, index) => {
-      // Entry cards on the left
-      const entryHTML = `
-        <div class="entry-row">
-          <strong>${entry.type}</strong>
-          ${entry.category ? ` > ${entry.category}` : ''}
-          ${entry.subCategory ? ` > ${entry.subCategory}` : ''}
-          <button class="btn btn-sm btn-danger float-end remove-btn" data-index="${index}">Remove</button>
-        </div>
-      `;
-      $entryList.append(entryHTML);
-
-      // Diagram preview on the right
-      const flow = `
-        <div class="box type-box">${entry.type}</div>
-        ${entry.category ? '<div class="arrow">↓</div><div class="box category-box">' + entry.category + '</div>' : ''}
-        ${entry.subCategory ? '<div class="arrow">↓</div><div class="box sub-box">' + entry.subCategory + ' → <span class="box product-box">Product</span></div>' : ''}
-        <hr/>
-      `;
-      $diagramPreview.append(flow);
-    });
-
-    // Save to localStorage
-    localStorage.setItem('productEntries', JSON.stringify(entries));
-  }
-
-  $(document).ready(function() {
-    // Load from localStorage on page load
-    const saved = localStorage.getItem('productEntries');
-    if (saved) {
-      try {
-        entries = JSON.parse(saved) || [];
-      } catch (e) {
-        entries = [];
-      }
-      updateDisplay();
+  function handleLogout() {
+    if (confirm("Are you sure you want to log out?")) {
+      localStorage.clear();
+      window.location.href = "index.html";
     }
+  }
 
-    // Event binding
-    $('#addButton').on('click', addEntry);
-
-    // Delegate remove buttons (because they are dynamic)
-    $('#entryList').on('click', '.remove-btn', function() {
-      const index = $(this).data('index');
-      removeEntry(index);
+  function renderEntries() {
+    const $entryList = $("#entryList").empty();
+    entries.forEach((entry) => {
+      $entryList.append(`
+        <div class="entry-row">
+          <strong>Type:</strong> ${entry.type || "N/A"}<br>
+          <strong>Category:</strong> ${entry.category || "N/A"}<br>
+          <strong>Sub-Category:</strong> ${entry.subCategory || "N/A"}
+        </div>
+      `);
     });
-  });
+  }
 </script>
 </body>
 </html>

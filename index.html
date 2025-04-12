@@ -226,77 +226,57 @@
     ></script>
     <script>
       $(document).ready(function () {
-        const otpModalEl = $("#otpModal")[0];
-        const otpModal = new bootstrap.Modal(otpModalEl);
-        let countdownInterval;
         let generatedOtp = "";
-
-        function generateOtp() {
-          return Math.floor(100000 + Math.random() * 900000);
-        }
 
         $("#mobileForm").on("submit", function (e) {
           e.preventDefault();
-          const mobile = $("#mobileInput").val();
-          if ($.trim(mobile) === "") {
+          const mobile = $("#mobileInput").val().trim();
+          if (!mobile) {
             alert("Please enter a mobile number.");
             return;
           }
 
           generatedOtp = generateOtp();
-          alert("Generated OTP (simulated): " + generatedOtp);
-
-          otpModal.show();
-          setTimeout(() => {
-            $("#otpInput").focus();
-          }, 500);
-
-          let time = 150;
-          clearInterval(countdownInterval);
-          countdownInterval = setInterval(() => {
-            const minutes = String(Math.floor(time / 60)).padStart(2, "0");
-            const seconds = String(time % 60).padStart(2, "0");
-            $("#countdown").text(`${minutes}:${seconds}`);
-            time--;
-            if (time < 0) {
-              clearInterval(countdownInterval);
-              $("#resendText").text("You can resend OTP now");
-            }
-          }, 1000);
+          alert(`Generated OTP (simulated): ${generatedOtp}`);
+          showOtpModal();
         });
 
         $("#submitOtpBtn").on("click", function () {
-          const otp = $("#otpInput").val();
-          if (otp.length !== 6) {
-            alert("Please enter a 6-digit OTP.");
-            return;
-          }
-
-          if (otp === generatedOtp.toString()) {
-            otpModal.hide();
+          const otp = $("#otpInput").val().trim();
+          if (otp === generatedOtp) {
+            $("#otpModal").modal("hide");
             $("#inputCard").hide();
             $("#successCard").show();
           } else {
             alert("Invalid OTP. Please try again.");
           }
         });
-
-        let selectedTheme = "bags";
-
-        window.selectTheme = function (theme) {
-          selectedTheme = theme;
-
-          ["bags", "flex", "chic"].forEach(t => {
-            const btn = $(`#${t}Btn`);
-            btn.attr("class", "btn btn-outline-primary w-100");
-            btn.text("Apply");
-          });
-
-          const selectedBtn = $(`#${theme}Btn`);
-          selectedBtn.attr("class", "btn btn-outline-success w-100");
-          selectedBtn.text("✔ Selected");
-        };
       });
+
+      function generateOtp() {
+        return Math.floor(100000 + Math.random() * 900000).toString();
+      }
+
+      function showOtpModal() {
+        const otpModal = new bootstrap.Modal($("#otpModal")[0]);
+        otpModal.show();
+        startCountdown();
+      }
+
+      function startCountdown() {
+        let time = 150;
+        const $countdown = $("#countdown");
+        const interval = setInterval(() => {
+          const minutes = String(Math.floor(time / 60)).padStart(2, "0");
+          const seconds = String(time % 60).padStart(2, "0");
+          $countdown.text(`${minutes}:${seconds}`);
+          time--;
+          if (time < 0) {
+            clearInterval(interval);
+            $("#resendText").text("You can resend OTP now");
+          }
+        }, 1000);
+      }
     </script>
   </body>
 </html>
