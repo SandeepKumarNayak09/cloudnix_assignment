@@ -1,62 +1,302 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cloudnix Onboarding Wizard</title>
-  <meta name="description" content="A clean and responsive onboarding wizard for Cloudnix.">
-  <meta name="theme-color" content="#007bff">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div class="container py-5">
-    <h2 class="text-center mb-4">Welcome to Cloudnix Onboarding</h2>
-    <p class="text-center text-muted mb-5">Follow the steps below to set up your account and get started.</p>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Create Store - OTP Form</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+          url("https://cdn.pixabay.com/photo/2023/07/04/07/25/self-consciousness-8105584_1280.jpg")
+            center/cover no-repeat fixed;
+        min-height: 100vh;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
 
-    <div id="step-1" class="step-section active">
-      <h4 class="mb-4">Step 1: Select a Theme</h4>
-      <div class="row">
-        <div class="col-md-4 mb-3">
-          <div class="card theme-card p-3 text-center selected" data-theme="Bags theme">
-            <img src="" class="card-img-top" alt="Bags theme" width="300" height="200" loading="lazy">
-            <div class="card-body">
-              <h5 class="card-title">Bags Theme <span class="text-success">(Recommended)</span></h5>
-              <button class="btn btn-outline-primary apply-button hidden-element">Apply</button>
-              <div class="text-success fs-4 checkmark-icon">✔</div>
-            </div>
-          </div>
+      .card-style {
+        width: 30%;
+        max-width: 1200px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 16px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        padding: 30px;
+        color: #fff;
+        transition: all 0.4s ease;
+      }
+
+      .card-style.theme-wide {
+        width: 100%;
+      }
+
+      .otp-input {
+        font-weight: bold;
+        color: #00ffb3;
+        font-size: 1.6rem;
+      }
+
+      .countdown {
+        font-size: 0.95rem;
+        color: #d0f0ff;
+      }
+
+      .modal-content {
+        border-radius: 1rem;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.95);
+        color: #222;
+      }
+
+      .modal-dialog-centered.modal-sm {
+        max-width: 400px;
+        margin: auto;
+      }
+
+      #successCard,
+      #storeDetailsCard {
+        display: none;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(16px);
+        border-radius: 16px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        padding: 30px;
+        max-width: 400px;
+        color: #fff;
+        animation: fadeInUp 0.6s ease forwards;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          transform: translateY(40px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .check-icon {
+        font-size: 48px;
+        color: #00ffb3;
+      }
+
+      .form-control-file {
+        display: block;
+        margin-top: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="inputCard" class="card-style">
+      <h2 class="text-center mb-4">Create Store</h2>
+      <form id="mobileForm">
+        <div class="mb-3">
+          <label for="mobileInput" class="form-label">Enter Mobile Number</label>
+          <input
+            type="text"
+            id="mobileInput"
+            class="form-control"
+            placeholder="Mobile Number"
+            required
+          />
         </div>
-        <div class="col-md-4 mb-3">
-          <div class="card theme-card p-3 text-center" data-theme="Flex theme">
-            <img src="" class="card-img-top" alt="Flex theme" width="300" height="200" loading="lazy">
-            <div class="card-body">
-              <h5 class="card-title">Flex Theme</h5>
-              <button class="btn btn-outline-primary apply-button">Apply</button>
-              <div class="text-success fs-4 checkmark-icon hidden-element">✔</div>
-            </div>
-          </div>
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary">GET OTP</button>
         </div>
-        <div class="col-md-4 mb-3">
-          <div class="card theme-card p-3 text-center" data-theme="Chic theme">
-            <img src="" class="card-img-top" alt="Chic theme" width="300" height="200" loading="lazy">
-            <div class="card-body">
-              <h5 class="card-title">Chic Theme</h5>
-              <button class="btn btn-outline-primary apply-button">Apply</button>
-              <div class="text-success fs-4 checkmark-icon hidden-element">✔</div>
+      </form>
+    </div>
+
+    <div id="successCard" class="text-center">
+      <div class="check-icon mb-3">✔️</div>
+      <h4>Store Created Successfully</h4>
+      <button
+        class="btn btn-primary mt-3"
+        onclick="document.getElementById('successCard').style.display='none';document.getElementById('themeSelectionCard').style.display='block';"
+      >
+        Continue
+      </button>
+    </div>
+
+    <div class="modal fade" id="otpModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content bg-white text-dark">
+          <div class="modal-header border-0">
+            <h5 class="modal-title">Create <strong>Store</strong></h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+              onclick="resetForm()"
+            ></button>
+          </div>
+          <div class="modal-body text-center">
+            <div class="alert alert-primary py-2 small" role="alert">
+              We have sent an OTP to your mobile number. Please enter it to
+              proceed.
             </div>
+            <label for="otpInput" class="form-label">OTP</label>
+            <input
+              type="text"
+              id="otpInput"
+              class="form-control text-center otp-input mb-2"
+              maxlength="6"
+              placeholder="Enter OTP"
+              autofocus
+            />
+            <div class="d-flex justify-content-between mt-2">
+              <span class="countdown" id="resendText">
+                Resend OTP in <span id="countdown">02:30</span>
+              </span>
+              <a href="#" class="text-decoration-none" onclick="editMobile()">Edit mobile</a>
+            </div>
+            <button id="submitOtpBtn" class="btn btn-info mt-3 w-100">
+              LET'S GO
+            </button>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="text-end">
-      <button class="btn btn-primary" id="next-button" onclick="window.location.href='add_product.html'">Next</button>
+    <div id="themeSelectionCard" class="card-style theme-wide" style="display: none">
+      <h4 class="text-center mb-4">APPLY THEME</h4>
+      <div class="row row-cols-1 row-cols-md-3 g-3">
+        <div class="col">
+          <div class="card theme-card border h-100" onclick="selectTheme('bags')">
+            <img
+              src="https://webcontrive.com/cdn/shop/files/stor_develop_img1.png?v=1688617741&width=526"
+              height="250px"
+              class="card-img-top"
+              alt="Bags Theme"
+            />
+            <div class="card-body text-center">
+              <h5 class="card-title">
+                Bags theme <small class="text-success">(recommended)</small>
+              </h5>
+              <button class="btn btn-outline-success w-100" id="bagsBtn">✔ Selected</button>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card theme-card border h-100" onclick="selectTheme('flex')">
+            <div class="card-body text-center">
+              <h5 class="card-title">Flex theme</h5>
+              <button class="btn btn-outline-primary w-100" id="flexBtn">Apply</button>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card theme-card border h-100" onclick="selectTheme('chic')">
+            <img
+              src="https://webinopoly.com/cdn/shop/articles/Shopify_Custom_Themes_Vs._Template_Themes_396x.jpg?v=1649845694"
+              height="250px"
+              class="card-img-top"
+              alt="Chic Theme"
+            />
+            <div class="card-body text-center">
+              <h5 class="card-title">Chic theme</h5>
+              <button class="btn btn-outline-primary w-100" id="chicBtn">Apply</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="d-grid mt-4">
+        <button onclick="window.location.href='step.html'" class="btn btn-primary">
+          Next
+        </button>
+      </div>
     </div>
-  </div>
 
-  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-  <script src="script.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.js"
+      integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      $(document).ready(function () {
+        const otpModalEl = $("#otpModal")[0];
+        const otpModal = new bootstrap.Modal(otpModalEl);
+        let countdownInterval;
+        let generatedOtp = "";
+
+        function generateOtp() {
+          return Math.floor(100000 + Math.random() * 900000);
+        }
+
+        $("#mobileForm").on("submit", function (e) {
+          e.preventDefault();
+          const mobile = $("#mobileInput").val();
+          if ($.trim(mobile) === "") {
+            alert("Please enter a mobile number.");
+            return;
+          }
+
+          generatedOtp = generateOtp();
+          alert("Generated OTP (simulated): " + generatedOtp);
+
+          otpModal.show();
+          setTimeout(() => {
+            $("#otpInput").focus();
+          }, 500);
+
+          let time = 150;
+          clearInterval(countdownInterval);
+          countdownInterval = setInterval(() => {
+            const minutes = String(Math.floor(time / 60)).padStart(2, "0");
+            const seconds = String(time % 60).padStart(2, "0");
+            $("#countdown").text(`${minutes}:${seconds}`);
+            time--;
+            if (time < 0) {
+              clearInterval(countdownInterval);
+              $("#resendText").text("You can resend OTP now");
+            }
+          }, 1000);
+        });
+
+        $("#submitOtpBtn").on("click", function () {
+          const otp = $("#otpInput").val();
+          if (otp.length !== 6) {
+            alert("Please enter a 6-digit OTP.");
+            return;
+          }
+
+          if (otp === generatedOtp.toString()) {
+            otpModal.hide();
+            $("#inputCard").hide();
+            $("#successCard").show();
+          } else {
+            alert("Invalid OTP. Please try again.");
+          }
+        });
+
+        let selectedTheme = "bags";
+
+        window.selectTheme = function (theme) {
+          selectedTheme = theme;
+
+          ["bags", "flex", "chic"].forEach(t => {
+            const btn = $(`#${t}Btn`);
+            btn.attr("class", "btn btn-outline-primary w-100");
+            btn.text("Apply");
+          });
+
+          const selectedBtn = $(`#${theme}Btn`);
+          selectedBtn.attr("class", "btn btn-outline-success w-100");
+          selectedBtn.text("✔ Selected");
+        };
+      });
+    </script>
+  </body>
 </html>
-

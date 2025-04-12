@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Step 2 - Product Type</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(
+          rgba(0, 0, 0, 0.6),
+          rgba(0, 0, 0, 0.6)
+        ),
+        url('https://cdn.pixabay.com/photo/2019/07/09/07/01/background-4326353_1280.jpg') center/cover no-repeat fixed;
+      color: #fff;
+      margin: 0;
+    }
+  
+    .step-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 40px 20px;
+      gap: 20px;
+    }
+  
+    .form-side {
+      flex: 0 0 45%;
+      max-width: 45%;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      color: #fff;
+    }
+  
+    .diagram-side {
+      flex: 0 0 45%;
+      max-width: 45%;
+      background: rgba(34, 193, 195, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 350px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      gap: 15px;
+    }
+  
+    .form-control {
+      margin-bottom: 15px;
+      color: #000;
+    }
+  
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+  
+    .flow {
+      width: 100%;
+      text-align: center;
+    }
+  
+    .box {
+      display: inline-block;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      margin: 10px 5px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      transition: transform 0.2s ease;
+    }
+  
+    .box:hover {
+      transform: scale(1.05);
+    }
+  
+    .type-box {
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      color: #fff;
+    }
+  
+    .category-box {
+      background: linear-gradient(to right, #ffe259, #ffa751);
+      color: #000;
+    }
+  
+    .sub-box {
+      background: linear-gradient(to right, #ffecd2, #fcb69f);
+      color: #000;
+    }
+  
+    .product-box {
+      background: linear-gradient(to right, #d9a7c7, #fffcdc);
+      color: #000;
+    }
+  
+    .entry-row {
+      background: rgba(255, 255, 255, 0.85);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      color: #333;
+      border-left: 5px solid #00c9a7;
+    }
+  
+    .arrow {
+      font-size: 1.5rem;
+      margin: 8px 0;
+      color: #fff;
+    }
+  
+    @media (max-width: 768px) {
+      .step-container {
+        flex-direction: column;
+        align-items: center;
+      }
+  
+      .form-side,
+      .diagram-side {
+        max-width: 100%;
+        flex: 0 0 100%;
+      }
+  
+      .box {
+        display: block;
+        width: auto;
+        margin: 10px auto;
+      }
+    }
+  </style>
+  
+</head>
+<body>
+
+  <div class="container text-center mt-4">
+    <!-- <h5>Step 2 - The user will add the product type and category</h5> -->
+  </div>
+
+  <div class="step-container">
+    <!-- Form Side -->
+    <div class="form-side">
+      <h4>Let's add a Type, Category and Sub-category</h4>
+        
+      <input type="text" id="typeInput" class="form-control" placeholder="Add a product type (e.g., Books)" required>
+      <input type="text" id="categoryInput" class="form-control" placeholder="Add a category (optional)">
+      <input type="text" id="subCategoryInput" class="form-control" placeholder="Add a sub-category (optional)">
+
+      <div class="d-grid gap-2">
+        <button class="btn btn-success" onclick="addEntry()">Add</button>
+      </div>
+
+      <div id="entryList" class="mt-4"></div>
+      <div class="btn-group mt-4">
+        <button onclick="window.location.href='cvbn.html'" class="btn btn-secondary">Back</button>
+
+        <!-- <button class="btn btn-primary" onclick="goToNextStep()">Next</button> -->
+        <button onclick="window.location.href='pricing.html'" class="btn btn-primary">Next</button>
+
+      </div>
+    </div>
+
+    
+    <!-- Diagram Side -->
+    <div class="diagram-side">
+        <div class="flow">
+          <div class="box type-box">Product type</div>
+          <div class="arrow">↓</div>
+          <div class="box category-box">Category</div>
+          <div class="arrow">↓</div>
+          <div class="box sub-box">Sub-Category → <span class="box product-box">Product</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+  let entries = [];
+
+  function addEntry() {
+    const type = $.trim($('#typeInput').val());
+    const category = $.trim($('#categoryInput').val());
+    const subCategory = $.trim($('#subCategoryInput').val());
+
+    if (!type) {
+      alert("Product type is required.");
+      return;
+    }
+
+    const entry = { type, category, subCategory };
+    entries.push(entry);
+    updateDisplay();
+    clearInputs();
+  }
+
+  function removeEntry(index) {
+    entries.splice(index, 1);
+    updateDisplay();
+  }
+
+  function clearInputs() {
+    $('#typeInput').val('');
+    $('#categoryInput').val('');
+    $('#subCategoryInput').val('');
+  }
+
+  function updateDisplay() {
+    const $entryList = $('#entryList').empty();
+    const $diagramPreview = $('#diagramPreview').empty();
+
+    entries.forEach((entry, index) => {
+      // Entry cards on the left
+      const entryHTML = `
+        <div class="entry-row">
+          <strong>${entry.type}</strong>
+          ${entry.category ? ` > ${entry.category}` : ''}
+          ${entry.subCategory ? ` > ${entry.subCategory}` : ''}
+          <button class="btn btn-sm btn-danger float-end remove-btn" data-index="${index}">Remove</button>
+        </div>
+      `;
+      $entryList.append(entryHTML);
+
+      // Diagram preview on the right
+      const flow = `
+        <div class="box type-box">${entry.type}</div>
+        ${entry.category ? '<div class="arrow">↓</div><div class="box category-box">' + entry.category + '</div>' : ''}
+        ${entry.subCategory ? '<div class="arrow">↓</div><div class="box sub-box">' + entry.subCategory + ' → <span class="box product-box">Product</span></div>' : ''}
+        <hr/>
+      `;
+      $diagramPreview.append(flow);
+    });
+
+    // Save to localStorage
+    localStorage.setItem('productEntries', JSON.stringify(entries));
+  }
+
+  $(document).ready(function() {
+    // Load from localStorage on page load
+    const saved = localStorage.getItem('productEntries');
+    if (saved) {
+      try {
+        entries = JSON.parse(saved) || [];
+      } catch (e) {
+        entries = [];
+      }
+      updateDisplay();
+    }
+
+    // Event binding
+    $('#addButton').on('click', addEntry);
+
+    // Delegate remove buttons (because they are dynamic)
+    $('#entryList').on('click', '.remove-btn', function() {
+      const index = $(this).data('index');
+      removeEntry(index);
+    });
+  });
+</script>
+</body>
+</html>
