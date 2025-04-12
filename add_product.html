@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopnix Onboarding Wizard - Add Product</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container py-5">
+    <h2 class="mb-4">Let's add a type, Category, and Sub-category</h2>
+    <div class="row">
+      <div class="col-md-6">
+        <form>
+          <div class="mb-3">
+            <label for="product-type" class="form-label">Add a product type</label>
+            <input type="text" class="form-control" id="product-type" placeholder="e.g., books">
+          </div>
+          <div class="mb-3">
+            <label for="product-category" class="form-label">Add a category (optional)</label>
+            <input type="text" class="form-control" id="product-category" placeholder="e.g., Academic book">
+          </div>
+          <div class="mb-3">
+            <label for="product-subcategory" class="form-label">Add a sub-category (optional)</label>
+            <input type="text" class="form-control" id="product-subcategory" placeholder="e.g., medical book">
+          </div>
+          <div class="d-flex justify-content-between">
+            <button type="button" class="btn btn-secondary" id="back-button">Back</button>
+            <button type="button" class="btn btn-primary" id="next-button">Next</button>
+          </div>
+        </form>
+      </div>
+      <div class="col-md-6">
+        <div class="p-3 bg-light text-center">
+          <img src="assets/product_hierarchy.png" alt="Product Type, Category, and Sub-category" class="img-fluid">
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
